@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TravelGenie - Jubilee Edition</title>
+    <title>500Trips - Jubilee Edition</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@800&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
@@ -481,7 +481,7 @@
     <!-- ======== Navigation Bar ======== -->
     <nav class="navbar">
         <div class="container">
-            <a href="#" class="logo">TravelGenie ✈️</a>
+            <a href="#" class="logo">500Trips ✈️</a>
             <ul class="nav-links">
                 <li><a id="destinations-link">History</a></li>
                 <li><a id="my-guides-link">My Guides</a></li>
@@ -552,7 +552,7 @@
     
     <!-- ======== Footer ======== -->
     <footer class="footer">
-        <p>&copy; 2025 TravelGenie. Let's make memories!</p>
+        <p>&copy; 2025 500Trips. Let's make memories!</p>
     </footer>
 
     <!-- ======== Details Modal ======== -->
@@ -613,7 +613,7 @@
     <!-- ======== Profile Setup Modal ======== -->
     <div id="profile-setup-modal" class="modal">
         <div class="modal-content">
-            <h2 class="section-header">Welcome to TravelGenie!</h2>
+            <h2 class="section-header">Welcome to 500Trips!</h2>
             <p style="text-align: center; margin-bottom: 1.5rem;">Let's get to know you.</p>
             <form id="profile-setup-form">
                 <input type="text" id="profile-name-input" placeholder="Your Name" required>
@@ -699,22 +699,22 @@
         };
 
         themeToggleButton.addEventListener('click', () => {
-            const currentTheme = localStorage.getItem('travelGenieTheme') || 'light';
+            const currentTheme = localStorage.getItem('500TripsTheme') || 'light';
             const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            localStorage.setItem('travelGenieTheme', newTheme);
+            localStorage.setItem('500TripsTheme', newTheme);
             applyTheme(newTheme);
         });
         
         // --- Profile Functions ---
         const getUserProfile = () => {
-            const profile = localStorage.getItem('travelGenieProfile');
+            const profile = localStorage.getItem('500TripsProfile');
             return profile ? JSON.parse(profile) : null;
         };
 
         const saveUserProfile = (profile) => {
             const existingProfile = getUserProfile() || {};
             const updatedProfile = { ...existingProfile, ...profile };
-            localStorage.setItem('travelGenieProfile', JSON.stringify(updatedProfile));
+            localStorage.setItem('500TripsProfile', JSON.stringify(updatedProfile));
             return updatedProfile;
         };
         
@@ -752,8 +752,8 @@
         };
 
         // --- LocalStorage History & Saved Guides Functions ---
-        const getSearchHistory = () => JSON.parse(localStorage.getItem('travelGenieHistory')) || [];
-        const saveSearchHistory = (history) => localStorage.setItem('travelGenieHistory', JSON.stringify(history));
+        const getSearchHistory = () => JSON.parse(localStorage.getItem('500TripsHistory')) || [];
+        const saveSearchHistory = (history) => localStorage.setItem('500TripsHistory', JSON.stringify(history));
 
         const addToHistory = (location) => {
             let history = getSearchHistory().filter(item => item.toLowerCase() !== location.toLowerCase());
@@ -1151,7 +1151,7 @@
         };
 
         // --- Initial Load ---
-        const savedTheme = localStorage.getItem('travelGenieTheme');
+        const savedTheme = localStorage.getItem('500TripsTheme');
         applyTheme(savedTheme);
         checkUserProfile();
     });
