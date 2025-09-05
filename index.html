@@ -77,6 +77,49 @@
             text-decoration: none;
         }
 
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 5px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 3px;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--primary-color);
+            border-radius: 2px;
+            transition: width 0.3s ease-in-out;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+        }
+
+
         /* ======== Hero Section ======== */
         .hero {
             min-height: 80vh; /* Reduced height to not take full page */
@@ -105,42 +148,50 @@
             margin-right: auto;
         }
         
-        /* Search Container from user's original CSS, adapted for Jubilee */
+        /* Search Container Styling */
         .search-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: var(--light-color);
-            border-radius: 1.5rem;
-            padding: 0.75rem;
-            box-shadow: 0 5px 15px rgba(255, 99, 71, 0.2);
-            border: 2px solid var(--primary-color);
+            position: relative;
             max-width: 700px;
             margin: auto;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .search-container:focus-within {
-            transform: scale(1.03);
-            box-shadow: 0 8px 25px rgba(255, 99, 71, 0.3);
         }
 
         #location-input {
             border: none;
             outline: none;
-            padding: 0.75rem 1.5rem;
+            padding: 1.25rem 1.5rem 1.25rem 3.5rem; /* Increased padding for icon */
             font-size: 1.1rem;
             font-family: 'Quicksand', sans-serif;
             width: 100%;
-            background: transparent;
+            background: var(--light-color);
             color: var(--text-color);
+            border-radius: 50px;
+            box-shadow: 0 5px 15px rgba(255, 99, 71, 0.2);
+            border: 2px solid transparent;
+            transition: border 0.3s ease;
+        }
+        #location-input:focus {
+             border: 2px solid var(--primary-color);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+            font-size: 1.5rem;
         }
 
         #search-button {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
             border: none;
             background: var(--primary-color);
             color: var(--light-color);
-            padding: 0.75rem 2rem;
-            border-radius: 1rem;
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
             font-size: 1.1rem;
             font-weight: 700;
             cursor: pointer;
@@ -148,7 +199,7 @@
         }
         #search-button:hover {
             background: var(--secondary-color);
-            transform: scale(1.05);
+            transform: translateY(-50%) scale(1.05);
         }
 
         /* ======== Main Content & Results Section ======== */
@@ -332,19 +383,49 @@
         
         /* Section styles for modal from user's CSS */
         .section-block { margin-bottom: 2rem; width: 100%; }
-        .section-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
+        .section-header-modal { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
         .section-title { font-family: 'Nunito', sans-serif; font-size: 1.8rem; color: var(--primary-color); margin-bottom: 1rem; border: none; background-color: transparent; padding: 0.5rem; width: 100%; border-radius: 4px; outline: none; }
-        .section-content { width: 100%; min-height: 300px; padding: 1rem; font-size: 1rem; line-height: 1.6; border: 1px solid #ccc; border-radius: 8px; resize: vertical; font-family: inherit; margin-bottom: 0.5rem; white-space: pre-wrap; }
+        .section-content { width: 100%; min-height: 300px; padding: 1rem; font-size: 1rem; line-height: 1.6; border: 1px solid #ccc; border-radius: 8px; resize: vertical; font-family: inherit; margin-bottom: 0.5rem; white-space: pre-wrap; background-color: #f9f9f9; }
+        .section-content:read-only { background-color: #fff; border-color: transparent; }
         .section-controls { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
-        .section-controls button, #modal-actions button { padding: 0.5rem 0.75rem; font-size: 1rem; cursor: pointer; background-color: #f1f1f1; border: 1px solid #ddd; border-radius: 8px; display: flex; align-items: center; gap: 0.25rem; font-weight: 700; transition: background-color 0.2s; }
-        .section-controls button:hover, #modal-actions button:hover { background-color: #e1e1e1; }
+        
+        .section-controls button, #modal-actions button, .edit-section { 
+            padding: 0.5rem 1rem; 
+            font-size: 0.9rem; 
+            cursor: pointer; 
+            background-color: #f1f1f1; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            display: flex; 
+            align-items: center; 
+            gap: 0.5rem; 
+            font-weight: 700; 
+            transition: all 0.2s; 
+            color: #555;
+        }
+        .section-controls button:hover, #modal-actions button:hover, .edit-section:hover { 
+            background-color: #e1e1e1;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transform: translateY(-1px);
+        }
+        .edit-section {
+             background: none;
+             border: none;
+             font-size: 1.2rem;
+             padding: 0.2rem 0.4rem;
+        }
+
         .user-instruction { flex: 1; padding: 0.5rem; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; min-width: 200px; }
         #pagination-controls { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #eee; display: flex; justify-content: center; align-items: center; gap: 1.5rem; }
         #page-indicator { font-size: 1.1rem; font-weight: bold; color: #555; }
         #modal-actions { display: flex; gap: 1rem; margin-top: 1.5rem; justify-content: center; flex-wrap: wrap; }
-        #listen-button { background-color: #28a745; color: white; }
-        #download-all { background-color: #007bff; color: white; }
-        #save-all { background-color: var(--primary-color); color: white; }
+        
+        #listen-button { background-color: #28a745; color: white; border-color: #28a745; }
+        #listen-button:hover { background-color: #218838; }
+        #download-all { background-color: #007bff; color: white; border-color: #007bff;}
+        #download-all:hover { background-color: #0056b3;}
+        #save-all { background-color: var(--primary-color); color: white; border-color: var(--primary-color);}
+        #save-all:hover { background-color: var(--secondary-color);}
 
         /* ======== Footer ======== */
         .footer {
@@ -367,6 +448,12 @@
     <nav class="navbar">
         <div class="container">
             <a href="#" class="logo">TravelGenie ✈️</a>
+            <ul class="nav-links">
+                <li><a href="#">Destinations</a></li>
+                <li><a href="#">Hotels</a></li>
+                <li><a href="#">Flights</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
         </div>
     </nav>
 
@@ -376,6 +463,7 @@
             <h1>Let's Go Somewhere!</h1>
             <p>Your personal AI guide to the world's wonders. Enter a destination to begin.</p>
              <div class="search-container">
+                <span class="search-icon">✈️</span>
                 <input type="text" id="location-input" placeholder="Enter a city or landmark (e.g., Rome)">
                 <button id="search-button">Find Places</button>
             </div>
@@ -679,10 +767,11 @@
                 const sectionDiv = document.createElement('div');
                 sectionDiv.className = 'section-block';
                 sectionDiv.innerHTML = `
-                    <div class="section-header">
+                    <div class="section-header-modal">
                         <h2 contenteditable="true" class="section-title">${section.title.replace(/^##\s*/, '')}</h2>
+                         <button class="edit-section" title="Edit section">✏️</button>
                     </div>
-                    <textarea class="section-content">${section.content}</textarea>
+                    <textarea class="section-content" readonly>${section.content}</textarea>
                     <div class="section-controls">
                         <input class="user-instruction" type="text" placeholder="How do you want to change this section? (optional)">
                         <button class="regen-section" title="Regenerate this section"><span>🔄</span> Regenerate</button>
@@ -696,6 +785,20 @@
             document.getElementById('next-page').style.display = (currentPage < paginatedSections.length - 1) ? 'block' : 'none';
             document.getElementById('page-indicator').textContent = paginatedSections.length > 1 ? `Page ${currentPage + 1} of ${paginatedSections.length}` : '';
             
+            // Add listeners for new edit buttons
+            document.querySelectorAll('.edit-section').forEach(btn => {
+                btn.onclick = () => {
+                    const textarea = btn.closest('.section-block').querySelector('.section-content');
+                    textarea.readOnly = !textarea.readOnly;
+                    if (!textarea.readOnly) {
+                        textarea.focus();
+                        btn.style.backgroundColor = 'var(--secondary-color)';
+                    } else {
+                         btn.style.backgroundColor = '';
+                    }
+                };
+            });
+
             document.querySelectorAll('.copy-section').forEach(btn => {
                 btn.onclick = () => {
                     const textarea = btn.closest('.section-block').querySelector('.section-content');
