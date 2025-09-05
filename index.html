@@ -271,7 +271,7 @@
             transform: rotate(3deg);
         }
         .destination-card:hover {
-             transform: translateY(-10px) scale(1.05) rotate(0);
+            transform: translateY(-10px) scale(1.05) rotate(0);
         }
 
         .result-card img, .destination-card img {
@@ -445,9 +445,10 @@
         #page-indicator { font-size: 1.1rem; font-weight: bold; }
         #modal-actions { display: flex; gap: 1rem; margin-top: 1.5rem; justify-content: center; flex-wrap: wrap; }
         
-        #listen-button, #download-all, #save-all { color: white; }
+        #listen-button, #download-all, #save-all, #regenerate-all-button { color: white; }
         #listen-button { background-color: #28a745; border-color: #28a745; } #listen-button:hover { background-color: #218838; }
         #download-all { background-color: #007bff; border-color: #007bff;} #download-all:hover { background-color: #0056b3;}
+        #regenerate-all-button { background-color: #ffc107; border-color: #ffc107; } #regenerate-all-button:hover { background-color: #e0a800; }
         #save-all { background-color: var(--primary-color); border-color: var(--primary-color);} #save-all:hover { background-color: var(--secondary-color);}
 
         /* List Styles for Modals */
@@ -506,9 +507,9 @@
             <h1 id="hero-title">Let's Go Somewhere!</h1>
             <p>Your personal AI guide to the world's wonders. Enter a destination to begin.</p>
              <div class="search-container">
-                <span class="search-icon">✈️</span>
-                <input type="text" id="location-input" placeholder="Enter a city or landmark (e.g., Rome)">
-                <button id="search-button">Find Places</button>
+                 <span class="search-icon">✈️</span>
+                 <input type="text" id="location-input" placeholder="Enter a city or landmark (e.g., Rome)">
+                 <button id="search-button">Find Places</button>
             </div>
         </div>
     </header>
@@ -518,21 +519,21 @@
             <h2 class="section-header">Popular Destinations</h2>
             <div class="destinations-grid">
                 <div class="destination-card" data-place="Paris, France">
-                    <img src="paris.webp" alt="Paris, France">
+                    <img src="https://raw.githubusercontent.com/jagdalepatil2002/newfrontend/main/paris.webp" alt="Paris, France">
                     <div class="card-content">
                         <h3>Paris, France</h3>
                         <p>The city of love, art, and iconic landmarks.</p>
                     </div>
                 </div>
                 <div class="destination-card" data-place="Maldives">
-                    <img src="maldivs.webp" alt="Maldives">
+                    <img src="https://raw.githubusercontent.com/jagdalepatil2002/newfrontend/main/maldivs.webp" alt="Maldives">
                     <div class="card-content">
                         <h3>Maldives</h3>
                         <p>Unwind in paradise with crystal-clear waters.</p>
                     </div>
                 </div>
                 <div class="destination-card" data-place="Santorini, Greece">
-                    <img src="Greece.webp" alt="Santorini, Greece">
+                    <img src="https://raw.githubusercontent.com/jagdalepatil2002/newfrontend/main/Greece.webp" alt="Santorini, Greece">
                     <div class="card-content">
                         <h3>Santorini, Greece</h3>
                         <p>Whitewashed villages and breathtaking sunsets.</p>
@@ -545,7 +546,7 @@
              <h2 id="results-header" class="section-header">Search Results</h2>
              <div id="loader" class="loader" style="display: none;"></div>
              <div id="results-container" class="results-container">
-                <!-- Search results will be displayed here -->
+                 <!-- Search results will be displayed here -->
             </div>
         </div>
     </main>
@@ -575,6 +576,7 @@
             </div>
             <div id="modal-actions">
                 <button id="listen-button">Listen to Guide</button>
+                <button id="regenerate-all-button">Regenerate All</button>
                 <button id="download-all">Download All</button>
                 <button id="save-all">Save All Changes</button>
             </div>
@@ -721,7 +723,7 @@
         const updateWelcomeMessage = () => {
              const profile = getUserProfile();
              if (profile && profile.name) {
-                heroTitle.textContent = `Where to next, ${profile.name.split(' ')[0]}?`;
+                 heroTitle.textContent = `Where to next, ${profile.name.split(' ')[0]}?`;
              }
         };
 
@@ -1069,8 +1071,8 @@
                     if (confirm('Are you sure you want to delete this section?')) {
                         paginatedSections[currentPage].splice(idx, 1);
                         if(paginatedSections[currentPage].length === 0 && paginatedSections.length > 1) {
-                            paginatedSections.splice(currentPage, 1);
-                            if(currentPage >= paginatedSections.length) currentPage = paginatedSections.length - 1;
+                             paginatedSections.splice(currentPage, 1);
+                             if(currentPage >= paginatedSections.length) currentPage = paginatedSections.length - 1;
                         }
                         renderCurrentPage();
                     }
@@ -1081,6 +1083,7 @@
 
         document.getElementById('prev-page').onclick = () => { if (currentPage > 0) { saveEditsToPage(); currentPage--; renderCurrentPage(); } };
         document.getElementById('next-page').onclick = () => { if (currentPage < paginatedSections.length - 1) { saveEditsToPage(); currentPage++; renderCurrentPage(); } };
+        document.getElementById('regenerate-all-button').addEventListener('click', regenerateAllSections);
 
         function saveEditsToPage() {
             if(!paginatedSections || !paginatedSections[currentPage]) return;
@@ -1117,10 +1120,48 @@
             }
         }
 
+        async function regenerateAllSections() {
+            saveEditsToPage();
+            modalLoader.style.display = 'block';
+            try {
+                const allSections = paginatedSections.flat();
+                const regenerationPromises = allSections.map(section => 
+                    fetch(`${API_BASE_URL}/regenerate-section`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            place_name: currentPlaceName,
+                            section_title: section.title,
+                            current_text: section.content,
+                            user_instruction: ''
+                        })
+                    }).then(response => {
+                        if (!response.ok) throw new Error(`Failed to regenerate: ${section.title.replace(/^##\s*/, '')}`);
+                        return response.json();
+                    })
+                );
+
+                const results = await Promise.all(regenerationPromises);
+
+                results.forEach((result, index) => {
+                    if(allSections[index]) {
+                        allSections[index].content = result.regenerated_content;
+                    }
+                });
+
+                renderCurrentPage();
+                alert('All sections have been regenerated!');
+            } catch (e) {
+                alert('Error during regeneration: ' + e.message);
+            } finally {
+                modalLoader.style.display = 'none';
+            }
+        }
+
         document.getElementById('download-all').onclick = () => {
             saveEditsToPage();
-            let allText = paginatedSections.flat().map(s => s.title + '\n' + s.content).join('\n\n');
-            const blob = new Blob([allText], {type: 'text/plain'});
+            let allText = paginatedSections.flat().map(s => s.content.trim()).join('\n\n');
+            const blob = new Blob([allText], {type: 'text/plain;charset=utf-8'});
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -1158,4 +1199,3 @@
     </script>
 </body>
 </html>
-
