@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelGenie - Jubilee Edition</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@800&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables for the Jubilee Theme */
+        :root {
+            --primary-color: #FF6347; /* Tomato */
+            --secondary-color: #FF7F50; /* Coral */
+            --accent-color: #40E0D0; /* Turquoise */
+            --background-color: #FFF5EE; /* Seashell */
+            --text-color: #333;
+            --light-color: #ffffff;
+            --shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 10px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Global Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 500;
+            color: var(--text-color);
+            line-height: 1.6;
+            background-color: var(--background-color);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 0 2rem;
+        }
+
+        /* ======== Navigation Bar ======== */
+        .navbar {
+            background: var(--light-color);
+            padding: 1.5rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: all 0.4s ease;
+        }
+        
+        .navbar.scrolled {
+            padding: 1rem 0;
+            box-shadow: var(--shadow);
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar .logo {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        /* ======== Hero Section ======== */
+        .hero {
+            min-height: 80vh; /* Reduced height to not take full page */
+            background-color: var(--background-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 8rem 1rem 4rem;
+        }
+        
+        .hero-content h1 {
+            font-family: 'Nunito', sans-serif;
+            font-size: clamp(3rem, 10vw, 5.5rem); /* Responsive font size */
+            color: var(--primary-color);
+            line-height: 1.1;
+            margin-bottom: 1rem;
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            font-weight: 500;
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Search Container from user's original CSS, adapted for Jubilee */
+        .search-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--light-color);
+            border-radius: 1.5rem;
+            padding: 0.75rem;
+            box-shadow: 0 5px 15px rgba(255, 99, 71, 0.2);
+            border: 2px solid var(--primary-color);
+            max-width: 700px;
+            margin: auto;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .search-container:focus-within {
+            transform: scale(1.03);
+            box-shadow: 0 8px 25px rgba(255, 99, 71, 0.3);
+        }
+
+        #location-input {
+            border: none;
+            outline: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1.1rem;
+            font-family: 'Quicksand', sans-serif;
+            width: 100%;
+            background: transparent;
+            color: var(--text-color);
+        }
+
+        #search-button {
+            border: none;
+            background: var(--primary-color);
+            color: var(--light-color);
+            padding: 0.75rem 2rem;
+            border-radius: 1rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+        #search-button:hover {
+            background: var(--secondary-color);
+            transform: scale(1.05);
+        }
+
+        /* ======== Main Content & Results Section ======== */
+        main {
+            padding: 2rem 0;
+            background-color: var(--light-color);
+            border-radius: 4rem 4rem 0 0;
+            margin-top: -3rem;
+            position: relative;
+            z-index: 5;
+            min-height: 50vh;
+        }
+        
+        .results-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 3rem;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: auto;
+        }
+        
+        /* Card styles adapted for results */
+        .result-card {
+            background-color: var(--light-color);
+            border-radius: 1.5rem;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s;
+        }
+        
+        .result-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: var(--shadow-hover);
+            z-index: 10;
+        }
+
+        .result-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .result-card .card-content {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .result-card h3 {
+            font-family: 'Nunito', sans-serif;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        .result-card p {
+            color: #555;
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+
+        /* Styles for the new Popular Destinations section */
+        .section-header {
+            font-family: 'Nunito', sans-serif;
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--text-color);
+        }
+
+        .destinations-grid {
+             display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 3rem;
+        }
+        
+        .destination-card {
+            background-color: var(--light-color);
+            border-radius: 1.5rem;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s;
+        }
+
+        .destination-card:nth-child(odd) {
+            transform: rotate(-3deg);
+        }
+        .destination-card:nth-child(even) {
+            transform: rotate(3deg);
+        }
+        
+        .destination-card:hover {
+            transform: translateY(-10px) scale(1.05) rotate(0);
+            box-shadow: var(--shadow-hover);
+            z-index: 10;
+        }
+
+        .destination-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .destination-card .card-content {
+            padding: 1.5rem;
+        }
+
+        .destination-card h3 {
+            font-family: 'Nunito', sans-serif;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+
+        /* Loader animation */
+        .loader {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid var(--primary-color);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 4rem auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* ======== MODAL STYLES (FROM USER'S CSS) ======== */
+        .modal {
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            display: none; /* Initially hidden */
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background-color: var(--light-color);
+            padding: 2rem;
+            border-radius: 2rem;
+            width: 90%;
+            max-width: 1000px; /* Wider for editor */
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.2);
+        }
+
+        .close-button {
+            color: #aaa;
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 2.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+        .close-button:hover {
+            color: var(--primary-color);
+            transform: rotate(90deg);
+        }
+        
+        /* Section styles for modal from user's CSS */
+        .section-block { margin-bottom: 2rem; width: 100%; }
+        .section-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
+        .section-title { font-family: 'Nunito', sans-serif; font-size: 1.8rem; color: var(--primary-color); margin-bottom: 1rem; border: none; background-color: transparent; padding: 0.5rem; width: 100%; border-radius: 4px; outline: none; }
+        .section-content { width: 100%; min-height: 300px; padding: 1rem; font-size: 1rem; line-height: 1.6; border: 1px solid #ccc; border-radius: 8px; resize: vertical; font-family: inherit; margin-bottom: 0.5rem; white-space: pre-wrap; }
+        .section-controls { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+        .section-controls button, #modal-actions button { padding: 0.5rem 0.75rem; font-size: 1rem; cursor: pointer; background-color: #f1f1f1; border: 1px solid #ddd; border-radius: 8px; display: flex; align-items: center; gap: 0.25rem; font-weight: 700; transition: background-color 0.2s; }
+        .section-controls button:hover, #modal-actions button:hover { background-color: #e1e1e1; }
+        .user-instruction { flex: 1; padding: 0.5rem; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; min-width: 200px; }
+        #pagination-controls { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #eee; display: flex; justify-content: center; align-items: center; gap: 1.5rem; }
+        #page-indicator { font-size: 1.1rem; font-weight: bold; color: #555; }
+        #modal-actions { display: flex; gap: 1rem; margin-top: 1.5rem; justify-content: center; flex-wrap: wrap; }
+        #listen-button { background-color: #28a745; color: white; }
+        #download-all { background-color: #007bff; color: white; }
+        #save-all { background-color: var(--primary-color); color: white; }
+
+        /* ======== Footer ======== */
+        .footer {
+            background: var(--secondary-color);
+            color: var(--light-color);
+            text-align: center;
+            padding: 3rem 0;
+            margin-top: 4rem;
+        }
+        
+        .footer p {
+            font-weight: 700;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- ======== Navigation Bar ======== -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="#" class="logo">TravelGenie ✈️</a>
+        </div>
+    </nav>
+
+    <!-- ======== Hero Section ======== -->
+    <header class="hero">
+        <div class="hero-content">
+            <h1>Let's Go Somewhere!</h1>
+            <p>Your personal AI guide to the world's wonders. Enter a destination to begin.</p>
+             <div class="search-container">
+                <input type="text" id="location-input" placeholder="Enter a city or landmark (e.g., Rome)">
+                <button id="search-button">Find Places</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="popular-destinations-section container">
+            <h2 class="section-header">Popular Destinations</h2>
+            <div class="destinations-grid">
+                <div class="destination-card" data-place="Paris, France">
+                    <img src="paris.webp" alt="Paris, France">
+                    <div class="card-content">
+                        <h3>Paris, France</h3>
+                        <p>The city of love, art, and iconic landmarks.</p>
+                    </div>
+                </div>
+                <div class="destination-card" data-place="Maldives">
+                    <img src="maldivs.webp" alt="Maldives">
+                    <div class="card-content">
+                        <h3>Maldives</h3>
+                        <p>Unwind in paradise with crystal-clear waters.</p>
+                    </div>
+                </div>
+                <div class="destination-card" data-place="Santorini, Greece">
+                    <img src="Greece.webp" alt="Santorini, Greece">
+                    <div class="card-content">
+                        <h3>Santorini, Greece</h3>
+                        <p>Whitewashed villages and breathtaking sunsets.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="search-results-section" class="container" style="display: none; padding-top: 3rem;">
+             <h2 id="results-header" class="section-header">Search Results</h2>
+             <div id="loader" class="loader" style="display: none;"></div>
+             <div id="results-container" class="results-container">
+                <!-- Search results will be displayed here -->
+            </div>
+        </div>
+    </main>
+    
+    <!-- ======== Footer ======== -->
+    <footer class="footer">
+        <p>&copy; 2025 TravelGenie. Let's make memories!</p>
+    </footer>
+
+    <!-- ======== Modal (From User's HTML) ======== -->
+    <div id="details-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <div id="modal-loader" class="loader" style="display: none;"></div>
+            <div id="modal-body">
+                <!-- Paginated, editable sections will be loaded here -->
+            </div>
+            <div id="pagination-controls">
+                <button id="prev-page" style="display:none; font-size:1.5rem; background:none; border:none; cursor:pointer;">&#8592;</button>
+                <span id="page-indicator"></span>
+                <button id="next-page" style="display:none; font-size:1.5rem; background:none; border:none; cursor:pointer;">&#8594;</button>
+            </div>
+            <div id="modal-actions">
+                <button id="listen-button">Listen to Guide</button>
+                <button id="download-all">Download All</button>
+                <button id="save-all">Save All Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- Navbar Scroll Effect ---
+        const navbar = document.querySelector('.navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Add event listeners for Popular Destination cards
+        document.querySelectorAll('.destination-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const placeName = card.dataset.place;
+                if (placeName) {
+                    showPlaceDetails(placeName);
+                }
+            });
+        });
+
+        // --- Core Application Logic (from user's script.js) ---
+        const searchButton = document.getElementById('search-button');
+        const locationInput = document.getElementById('location-input');
+        const resultsContainer = document.getElementById('results-container');
+        const loader = document.getElementById('loader');
+        const searchResultsSection = document.getElementById('search-results-section');
+        
+        const modal = document.getElementById('details-modal');
+        const modalBody = document.getElementById('modal-body');
+        const modalLoader = document.getElementById('modal-loader');
+        const closeButton = document.querySelector('.close-button');
+        const listenButton = document.getElementById('listen-button');
+
+        const API_BASE_URL = 'http://127.0.0.1:5000';
+
+        // --- Event Listeners ---
+        searchButton.addEventListener('click', searchForPlaces);
+        locationInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                searchForPlaces();
+            }
+        });
+
+        closeButton.addEventListener('click', () => {
+            modal.style.display = 'none';
+            resetListenButton();
+        });
+
+        window.addEventListener('click', (event) => {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+                resetListenButton();
+            }
+        });
+        
+        window.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && modal.style.display !== 'none') {
+                closeButton.click();
+            }
+        });
+
+        let isSpeaking = false;
+        let currentUtterance = null;
+
+        listenButton.addEventListener('click', () => {
+            if (isSpeaking) {
+                window.speechSynthesis.cancel();
+                isSpeaking = false;
+                listenButton.textContent = 'Listen to Guide';
+                return;
+            }
+            let sectionsText = '';
+            const sectionBlocks = document.querySelectorAll('.section-block');
+            
+            if (sectionBlocks.length === 0) {
+                alert('No guide text to read.');
+                return;
+            }
+            
+            sectionBlocks.forEach(block => {
+                const title = block.querySelector('.section-title').textContent;
+                const content = block.querySelector('.section-content').value;
+                sectionsText += title + ". " + content + ". ";
+            });
+            
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+            }
+            currentUtterance = new window.SpeechSynthesisUtterance(sectionsText);
+            isSpeaking = true;
+            listenButton.textContent = 'Stop Listening';
+            currentUtterance.onend = () => { isSpeaking = false; listenButton.textContent = 'Listen to Guide'; };
+            currentUtterance.onerror = () => { isSpeaking = false; listenButton.textContent = 'Listen to Guide'; };
+            window.speechSynthesis.speak(currentUtterance);
+        });
+
+        function resetListenButton() {
+            if (isSpeaking) {
+                window.speechSynthesis.cancel();
+                isSpeaking = false;
+            }
+            listenButton.textContent = 'Listen to Guide';
+        }
+
+        // --- Functions ---
+        async function searchForPlaces() {
+            const location = locationInput.value.trim();
+            if (!location) {
+                alert('Please enter a location.');
+                return;
+            }
+            searchResultsSection.style.display = 'block';
+            resultsContainer.innerHTML = '';
+            loader.style.display = 'block';
+            try {
+                const response = await fetch(`${API_BASE_URL}/search-places`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ location: location })
+                });
+                if (!response.ok) { throw new Error(`HTTP error! status: ${response.status}`); }
+                const data = await response.json();
+                console.log(`Search Places call used ${data.token_count} tokens.`);
+                displayPlaces(data.places);
+            } catch (error) {
+                console.error('Error fetching places:', error);
+                resultsContainer.innerHTML = '<p class="error-message" style="text-align:center; color: var(--primary-color);">Sorry, something went wrong. Please try again.</p>';
+            } finally {
+                loader.style.display = 'none';
+            }
+        }
+
+        function displayPlaces(places) {
+            if (!places || places.length === 0) {
+                resultsContainer.innerHTML = '<p style="text-align:center;">No famous places found. Try a different search.</p>';
+                return;
+            }
+            resultsContainer.innerHTML = '';
+            places.forEach(place => {
+                const card = document.createElement('div');
+                card.className = 'result-card';
+                const imageUrl = place.image_url ? place.image_url : `https://placehold.co/600x400/FF6347/FFF5EE?text=${encodeURIComponent(place.name)}`;
+                card.innerHTML = `
+                    <img src="${imageUrl}" alt="Image of ${place.name}" onerror="this.src='https://placehold.co/600x400/FF6347/FFF5EE?text=Image+Not+Found'">
+                    <div class="card-content">
+                        <h3>${place.name}</h3>
+                        <p>${place.description}</p>
+                    </div>
+                `;
+                card.addEventListener('click', () => showPlaceDetails(place.name));
+                resultsContainer.appendChild(card);
+            });
+        }
+
+        // --- Paginated Section Logic ---
+        let paginatedSections = [];
+        let currentPage = 0;
+        let currentPlaceName = '';
+        let allSections = [];
+
+        async function showPlaceDetails(placeName) {
+            modal.style.display = 'flex';
+            modalBody.innerHTML = '';
+            modalLoader.style.display = 'block';
+            currentPlaceName = placeName;
+            currentPage = 0;
+            paginatedSections = [];
+            allSections = [];
+            try {
+                const response = await fetch(`${API_BASE_URL}/place-details`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ place_name: placeName })
+                });
+                if (!response.ok) { throw new Error(`HTTP error! status: ${response.status}`); }
+                const data = await response.json();
+                console.log(`Place Details call used ${data.token_count} tokens.`);
+                allSections = splitMarkdownSections(data.description);
+                paginatedSections = paginateSections(allSections, 3, 6000);
+                renderCurrentPage();
+            } catch (error) {
+                console.error('Error fetching place details:', error);
+                modalBody.innerHTML = '<p class="error-message">Could not load details. Please try again later.</p>';
+            } finally {
+                modalLoader.style.display = 'none';
+            }
+        }
+
+        function splitMarkdownSections(markdown) {
+            if(!markdown) return [];
+            const regex = /^##\s+(.+)$/gm;
+            let sections = [];
+            const parts = markdown.split(regex);
+            if(parts.length < 3) return [{title: '## Overview', content: markdown}];
+            for (let i = 1; i < parts.length; i += 2) {
+                sections.push({ title: '## ' + parts[i], content: parts[i + 1].trim() });
+            }
+            return sections;
+        }
+
+        function paginateSections(sections, maxSectionsPerPage = 3, maxCharsPerPage = 6000) {
+             if(!sections || sections.length === 0) return [];
+            let pages = [];
+            let i = 0;
+            while (i < sections.length) {
+                let page = [];
+                let chars = 0;
+                for (let j = 0; j < maxSectionsPerPage; j++) {
+                    if (i + j >= sections.length) break;
+                    let section = sections[i + j];
+                    let sectionLen = (section.title.length + section.content.length);
+                    if (chars + sectionLen > maxCharsPerPage && j > 0) break;
+                    page.push({...section});
+                    chars += sectionLen;
+                }
+                pages.push(page);
+                i += page.length;
+            }
+            return pages;
+        }
+
+        function renderCurrentPage() {
+            if (!paginatedSections.length) {
+                modalBody.innerHTML = "<p>No content to display.</p>";
+                return;
+            };
+            const pageSections = paginatedSections[currentPage];
+            modalBody.innerHTML = '';
+            pageSections.forEach((section, idx) => {
+                const sectionDiv = document.createElement('div');
+                sectionDiv.className = 'section-block';
+                sectionDiv.innerHTML = `
+                    <div class="section-header">
+                        <h2 contenteditable="true" class="section-title">${section.title.replace(/^##\s*/, '')}</h2>
+                    </div>
+                    <textarea class="section-content">${section.content}</textarea>
+                    <div class="section-controls">
+                        <input class="user-instruction" type="text" placeholder="How do you want to change this section? (optional)">
+                        <button class="regen-section" title="Regenerate this section"><span>🔄</span> Regenerate</button>
+                        <button class="copy-section" title="Copy to clipboard"><span>📋</span> Copy</button>
+                        <button class="delete-section" title="Delete section"><span>🗑️</span> Delete</button>
+                    </div>
+                `;
+                modalBody.appendChild(sectionDiv);
+            });
+            document.getElementById('prev-page').style.display = (currentPage > 0) ? 'block' : 'none';
+            document.getElementById('next-page').style.display = (currentPage < paginatedSections.length - 1) ? 'block' : 'none';
+            document.getElementById('page-indicator').textContent = paginatedSections.length > 1 ? `Page ${currentPage + 1} of ${paginatedSections.length}` : '';
+            
+            document.querySelectorAll('.copy-section').forEach(btn => {
+                btn.onclick = () => {
+                    const textarea = btn.closest('.section-block').querySelector('.section-content');
+                    navigator.clipboard.writeText(textarea.value).then(() => alert('Copied to clipboard!'));
+                };
+            });
+            document.querySelectorAll('.regen-section').forEach((btn, idx) => {
+                btn.onclick = async () => {
+                    const userInstruction = btn.closest('.section-block').querySelector('.user-instruction').value;
+                    await regenerateSection(idx, userInstruction);
+                };
+            });
+            document.querySelectorAll('.delete-section').forEach((btn, idx) => {
+                btn.onclick = () => {
+                    if (confirm('Are you sure you want to delete this section?')) {
+                        paginatedSections[currentPage].splice(idx, 1);
+                        if(paginatedSections[currentPage].length === 0 && paginatedSections.length > 1) {
+                            paginatedSections.splice(currentPage, 1);
+                            if(currentPage >= paginatedSections.length) currentPage = paginatedSections.length - 1;
+                        }
+                        renderCurrentPage();
+                    }
+                };
+            });
+            modal.scrollTop = 0;
+        }
+
+        document.getElementById('prev-page').onclick = () => { if (currentPage > 0) { saveEditsToPage(); currentPage--; renderCurrentPage(); } };
+        document.getElementById('next-page').onclick = () => { if (currentPage < paginatedSections.length - 1) { saveEditsToPage(); currentPage++; renderCurrentPage(); } };
+
+        function saveEditsToPage() {
+            if(!paginatedSections || !paginatedSections[currentPage]) return;
+            const pageSections = paginatedSections[currentPage];
+            const sectionDivs = modalBody.querySelectorAll('.section-block');
+            sectionDivs.forEach((div, idx) => {
+                const title = div.querySelector('.section-title').textContent;
+                const content = div.querySelector('.section-content').value;
+                if(pageSections[idx]){
+                    pageSections[idx].title = '## ' + title;
+                    pageSections[idx].content = content;
+                }
+            });
+        }
+
+        async function regenerateSection(idx, userInstruction = '') {
+            saveEditsToPage();
+            const section = paginatedSections[currentPage][idx];
+            modalLoader.style.display = 'block';
+            try {
+                const response = await fetch(`${API_BASE_URL}/regenerate-section`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ place_name: currentPlaceName, section_title: section.title, current_text: section.content, user_instruction: userInstruction })
+                });
+                if (!response.ok) { throw new Error(`Failed to regenerate section: ${await response.text()}`); }
+                const data = await response.json();
+                section.content = data.regenerated_content;
+                renderCurrentPage();
+            } catch (e) {
+                alert('Could not regenerate section: ' + e.message);
+            } finally {
+                modalLoader.style.display = 'none';
+            }
+        }
+
+        document.getElementById('download-all').onclick = () => {
+            saveEditsToPage();
+            let allText = paginatedSections.flat().map(s => s.title + '\n' + s.content).join('\n\n');
+            const blob = new Blob([allText], {type: 'text/plain'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentPlaceName}_guide.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        };
+
+        document.getElementById('save-all').onclick = async () => {
+            saveEditsToPage();
+            let allMarkdown = paginatedSections.flat().map(s => s.title + '\n' + s.content).join('\n\n');
+            modalLoader.style.display = 'block';
+            try {
+                const response = await fetch(`${API_BASE_URL}/save-detailed-description`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ place_name: currentPlaceName, description: allMarkdown })
+                });
+                if (!response.ok) { throw new Error(`Failed to save: ${await response.text()}`); }
+                await response.json();
+                alert('Guide saved successfully!');
+            } catch (e) {
+                console.error("Save error:", e);
+                alert('Could not save: ' + e.message);
+            } finally {
+                modalLoader.style.display = 'none';
+            }
+        };
+    });
+    </script>
+</body>
+</html>
+
+
