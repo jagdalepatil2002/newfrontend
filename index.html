@@ -877,8 +877,47 @@
 
         let isSpeaking = false;
         let currentUtterance = null;
-        listenButton.addEventListener('click', () => { /* ... (no changes) ... */ });
-        function resetListenButton() { /* ... (no changes) ... */ }
+        
+        listenButton.addEventListener('click', () => {
+            if (isSpeaking) {
+                window.speechSynthesis.cancel();
+                isSpeaking = false;
+                listenButton.textContent = 'Listen to Guide';
+                return;
+            }
+            let sectionsText = '';
+            const sectionBlocks = detailsModal.querySelectorAll('.section-block');
+            
+            if (sectionBlocks.length === 0) {
+                alert('No guide text to read.');
+                return;
+            }
+            
+            sectionBlocks.forEach(block => {
+                const title = block.querySelector('.section-title').textContent;
+                const content = block.querySelector('.section-content').value;
+                sectionsText += title + ". " + content + ". ";
+            });
+            
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+            }
+            
+            currentUtterance = new window.SpeechSynthesisUtterance(sectionsText);
+            isSpeaking = true;
+            listenButton.textContent = 'Stop Listening';
+            currentUtterance.onend = () => { isSpeaking = false; listenButton.textContent = 'Listen to Guide'; };
+            currentUtterance.onerror = () => { isSpeaking = false; listenButton.textContent = 'Listen to Guide'; };
+            window.speechSynthesis.speak(currentUtterance);
+        });
+
+        function resetListenButton() {
+            if (isSpeaking) {
+                window.speechSynthesis.cancel();
+                isSpeaking = false;
+                listenButton.textContent = 'Listen to Guide';
+            }
+        }
 
         async function searchForPlaces() {
             const location = locationInput.value.trim();
